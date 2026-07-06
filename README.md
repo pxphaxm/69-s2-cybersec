@@ -3,5 +3,5 @@
 ## My Information
 - Phoonnaphalin Kachat
 - 0568604050XXX
-- คาดหวังว่าจะได้เรียนรู้รูปแบบของภัยคุกคามทางไซเบอร์ในปัจจุบัน และแนวทางการป้องกันเบื้องต้น เพื่อนำไปปรับใช้ทั้งในการเรียนและการทำงานในสายไอที
+- I expect to learn about current cyber threats and basic prevention guidelines to apply them to both my studies and future work in the IT field.
  
