@@ -1,21 +1,31 @@
 services:
   db:
-    image: postgres:16-alpine
+    image: postgres
     container_name: 69-s2-db
-    ports:
-      - 54321:5432
+    restart: always
     environment:
-      - POSTGRES_PASSWORD=aom@1234
-      - POSTGRES_USER=aom
-      - POSTGRES_DB=aom
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
-  admin:
+  pgadmin:
     image: dpage/pgadmin4
     container_name: 69-s2-admin
-    ports:
-      - 8082:80
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=aom@admin.com
-      - PGADMIN_DEFAULT_PASSWORD=aom@1234
+    restart: always
     depends_on:
       - db
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "8082:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+volumes:
+  postgres_data:
+  pgadmin_data:
