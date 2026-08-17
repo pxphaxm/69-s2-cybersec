@@ -1,0 +1,11 @@
+# REST
+
+## Login
+POST http://localhost:9192/admin/login
+Content-Type: application/json
+
+{
+    "email": "phoonnaphalin-k@rmutp.ac.th",
+    "password": "Aom@1234",
+    "rememberMe": false
+}
