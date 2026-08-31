@@ -1,8 +1,13 @@
-# REST
+### REST API
+### ========================================
 
-## 1.Admin
-### 1.1 Login
-POST http://localhost:9192/admin/login
+
+### ========================================
+### 1. ADMIN
+### ========================================
+
+### 1.1 Admin Login
+POST http://localhost:9092/admin/login
 Content-Type: application/json
 
 {
@@ -11,13 +16,39 @@ Content-Type: application/json
     "rememberMe": false
 }
 
-### 1.2 Register
-### 1.3 Forgot Password
-### 1.4 Profile
 
-## 2.User
-### 2.1 Login
-POST http://localhost:9192/api/auth/local
+### 1.2 Admin Register
+POST http://localhost:9092/admin/register-admin
+Content-Type: application/json
+
+{
+    "firstname": "",
+    "lastname": "",
+    "email": "",
+    "password": ""
+}
+
+
+### 1.3 Admin Forgot Password
+POST http://localhost:9092/admin/auth/forgot-password
+Content-Type: application/json
+
+{
+    "email": ""
+}
+
+
+### 1.4 Admin Profile
+GET http://localhost:9092/admin/profile
+Authorization: Bearer <ADMIN_TOKEN>
+
+
+### ========================================
+### 2. USER
+### ========================================
+
+### 2.1 User Login
+POST http://localhost:9092/api/auth/local
 Content-Type: application/json
 
 {
@@ -25,6 +56,27 @@ Content-Type: application/json
     "password": ""
 }
 
-### 2.2 Register
-### 2.3 Forgot Password
-### 2.4 Profile
+
+### 2.2 User Register
+POST http://localhost:9092/api/auth/local/register
+Content-Type: application/json
+
+{
+    "username": "",
+    "email": "",
+    "password": ""
+}
+
+
+### 2.3 User Forgot Password
+POST http://localhost:9092/api/auth/forgot-password
+Content-Type: application/json
+
+{
+    "email": ""
+}
+
+
+### 2.4 User Profile
+GET http://localhost:9092/api/users/me
+Authorization: Bearer <USER_TOKEN>
