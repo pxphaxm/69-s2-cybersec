@@ -12,11 +12,13 @@
 @USER_USERNAME = {{$dotenv USER_USERNAME}}
 @USER_RESET_CODE = {{$dotenv USER_RESET_CODE}}
 @USER_JWT = {{$dotenv USER_JWT}}
+@ADMIN_BASIC = {{$dotenv ADMIN_BASIC_TOKEN}}
 
 
 ## 1.Admin
 ### 1.1 Login
 POST http://localhost:1337/admin/login
+Authorization: Basic {{ADMIN_BASIC}}
 Content-Type: application/json
 
 {
@@ -28,6 +30,7 @@ Content-Type: application/json
 
 ### 1.2 Register (Admin) one time for first time
 POST http://localhost:1337/admin/register-admin
+Authorization: Basic {{ADMIN_BASIC}}
 Content-Type: application/json
 
 {
@@ -40,6 +43,7 @@ Content-Type: application/json
 
 ### 1.3 Forget Password
 POST http://localhost:1337/admin/forgot-password
+Authorization: Basic {{ADMIN_BASIC}}
 Content-Type: application/json
 
 {
@@ -48,8 +52,9 @@ Content-Type: application/json
 
 
 ### 1.3.1 Reset Password
-# เอา code จาก response ของ Forgot Password มาใส่ที่ resetPasswordToken (ดู log server ได้เช่นกัน)
+# เอา code จาก response ของ Forgot Password มาใส่ที่ resetPasswordToken (ดูใน DB ได้เช่นกัน)
 POST http://localhost:1337/admin/reset-password
+Authorization: Basic {{ADMIN_BASIC}}
 Content-Type: application/json
 
 {

@@ -8,9 +8,14 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   pgadmin:
     image: dpage/pgadmin4
@@ -22,29 +27,58 @@ services:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     ports:
-      - "8082:80"
+      - "127.0.0.1:8082:80"
     volumes:
       - pgadmin_data:/var/lib/pgadmin
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost/misc/ping || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
 
   app:
     image: prawee/strapi
     container_name: 69-s2-app
     restart: always
     depends_on:
-      - db
-    ports:
-      - "9092:1337"
+      db:
+        condition: service_healthy
     environment:
+      NODE_ENV: production
       DATABASE_CLIENT: postgres
       DATABASE_NAME: ${POSTGRES_DB}
       DATABASE_HOST: db
       DATABASE_PORT: 5432
       DATABASE_USERNAME: ${POSTGRES_USER}
       DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
-      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET}
       APP_KEYS: ${APP_KEYS}
       API_TOKEN_SALT: ${API_TOKEN_SALT}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET}
       TRANSFER_TOKEN_SALT: ${TRANSFER_TOKEN_SALT}
+      JWT_SECRET: ${JWT_SECRET}
+    volumes:
+      - ./app/config/plugins.js:/opt/app/config/plugins.js:ro
+      - ./app/config/admin.js:/opt/app/config/admin.js:ro
+      - ./app/extensions:/opt/app/src/extensions:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:1337/_health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  web:
+    image: nginx:1.25-alpine
+    container_name: 69-s2-web
+    restart: always
+    depends_on:
+      app:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:9092:80"
+    volumes:
+      - ./infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./infra/nginx/.htpasswd:/etc/nginx/.htpasswd:ro
+      - ./infra/nginx/logs:/var/log/nginx
 
 volumes:
   postgres_data:
